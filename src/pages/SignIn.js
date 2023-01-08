@@ -33,7 +33,7 @@ function SignIn() {
                                 setErrorMessage('Invalid email');
                                 break;
                             case 'auth/weak-password':
-                                setErrorMessage('Weak password');
+                                setErrorMessage('Weak password (Length needs 6 digitsd)');
                                 break;
                             default:
                         }
@@ -72,6 +72,9 @@ function SignIn() {
                     onClick={() => { 
                         setActiveItem('signup');
                         setErrorMessage('');
+                        setEmail('');
+                        setPassword('');
+                        setConfirmPassword('');
                     }}>
                         Sign Up
                 </Menu.Item>
@@ -80,6 +83,9 @@ function SignIn() {
                     onClick={() => {
                         setActiveItem('signin');
                         setErrorMessage('');
+                        setEmail('');
+                        setPassword('');
+                        setConfirmPassword('');
                     }}>
                         Sign In
                 </Menu.Item>

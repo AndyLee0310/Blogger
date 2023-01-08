@@ -13,6 +13,7 @@ function Home() {
             setUser(currentUser);
         })
     }, []);
+
     return (
         <Container textAlign='center'>
             {user ? (

@@ -2,19 +2,29 @@ import React from 'react';
 import { Container, Header, Form, Image, Button } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
 import { database, auth, storage } from '../firebase';
+import { onAuthStateChanged } from "firebase/auth";
 import { ref as databaseRef, push, child, update, query, onValue } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
 import defaultImage from '../assets/images/defaultImage.png';
 
 function NewPost() {
     const history = useNavigate();
+    const [user, setUser] = React.useState(null);
     const [title, setTitle] = React.useState('');
     const [content, setContent] = React.useState('');
-    const [topic, setTopic] = React.useState('');
     const [file, setFile] = React.useState(null);
     const [isLoading, setIsLoading] = React.useState(false);
 
     const previewUrl = file ? URL.createObjectURL(file) : defaultImage;
+
+    React.useEffect(() => {
+        onAuthStateChanged(auth, (currentUser) => {
+            // if (user)
+            setUser(currentUser);
+            // else
+            //     history('/signin');
+        })
+    }, []);
 
     const handleSubmit = () => {
         setIsLoading(true);
@@ -24,16 +34,17 @@ function NewPost() {
         // Create a unique key for new posts
         const newPostKey = push(child(databaseRef(database), 'posts')).key;
         const fileRef = storageRef(storage, 'post-images/' + newPostKey);
+        const date = new Date();
+        const newDateTime = date.toLocaleString("zh-TW", {hour12: false});
 
         if (file === null) {
             // If not upload image
             uploadBytes(fileRef, file).then(() => {
                 obj = {
-                    topic,
                     title,
                     content,
                     imageUrl: '',
-                    createdAt: Date().toLocaleString(),
+                    createdAt: newDateTime,
                     author: {
                         displayName: auth.currentUser.displayName || '',
                         photoURL: auth.currentUser.photoURL || '',
@@ -59,11 +70,10 @@ function NewPost() {
                 getDownloadURL(fileRef).then((imageUrl) => {
                     // console.log(imageUrl);
                     obj = {
-                        topic,
                         title,
                         content,
                         imageUrl,
-                        createdAt: Date().toLocaleString(),
+                        createdAt: newDateTime,
                         author: {
                             displayName: auth.currentUser.displayName || '',
                             photoURL: auth.currentUser.photoURL || '',
@@ -89,7 +99,6 @@ function NewPost() {
     {
         "title": "test",
         "content": "test123",
-        "topic": "foods",
         "createdAt": database.Timestamp.now(),
         "author": {
             "displayName": "",
@@ -113,22 +122,6 @@ function NewPost() {
                     onChange={(e) => {
                         setFile(e.target.files[0]);
                     }}/>
-                <Form.Dropdown
-                    label='Post topic'
-                    placeholder="Please select topic about this post"
-                    options={[
-                        {
-                            text: 'Sports',
-                            value: 'sports',
-                        },
-                        {
-                            text: 'Foods',
-                            value: 'foods',
-                        }
-                    ]}
-                    selection
-                    value={topic}
-                    onChange={(e, { value }) => {setTopic(value);}} />
                 <Form.Input
                     label='Post Title'
                     value={title}
