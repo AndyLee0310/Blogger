@@ -37,7 +37,7 @@ class Posts extends React.Component {
         <Container textAlign='center'>
                 <Grid>
                     <Grid.Row>
-                        <Grid.Column width={3}>Topic</Grid.Column>
+                        <Grid.Column width={3}></Grid.Column>
                         <Grid.Column width={10} textAlign='left'>
                             <Item.Group>
                                 {posts.map(post => {
@@ -56,14 +56,14 @@ class Posts extends React.Component {
                                                 </Item.Meta>
                                                 <Item.Header>{post.val().title}</Item.Header>
                                                 <Item.Description>{post.val().content}</Item.Description>
-                                                <Item.Extra>0 Comments · {post.val().likedBy?.length || 0} Likes</Item.Extra>
+                                                <Item.Extra>{post.val().commentsCount || 0} Comments · {post.val().likedBy?.length || 0} Likes</Item.Extra>
                                             </Item.Content>
                                         </Item>
                                     );
                                 })}
                             </Item.Group>
                         </Grid.Column>
-                        <Grid.Column width={3}>Empty</Grid.Column>
+                        <Grid.Column width={3}></Grid.Column>
                     </Grid.Row>
                 </Grid>
             </Container>

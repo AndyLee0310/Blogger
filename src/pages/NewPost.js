@@ -41,6 +41,7 @@ function NewPost() {
             // If not upload image
             uploadBytes(fileRef, file).then(() => {
                 obj = {
+                    commentsCount: 0,
                     title,
                     content,
                     imageUrl: '',

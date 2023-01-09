@@ -24,7 +24,7 @@ function Header() {
             <Menu.Menu position="right">
                 {user ? (
                     <>
-                    <Menu.Item as={Link} to="/new-post">Post</Menu.Item>
+                    <Menu.Item as={Link} to="/new-post">New Post</Menu.Item>
                     <Menu.Item as={Link} to="/aboutMe">About Me</Menu.Item>
                     <Menu.Item onClick={() => {signOut(auth);}}>Sign Out</Menu.Item>
                     </>
