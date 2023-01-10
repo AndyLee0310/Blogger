@@ -1,5 +1,5 @@
 import React from 'react';
-import { Menu, Search, Image, Header as MenuHeader } from 'semantic-ui-react';
+import { Menu, Search, Image } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { auth, database } from './firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';

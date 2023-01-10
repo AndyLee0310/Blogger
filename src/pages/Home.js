@@ -22,6 +22,8 @@ function Home() {
             ) : (
                 <>
                     <Header as='h1'>Welcome to the Blogger.</Header>
+                    <Header as='h3'>You do not have permission to view articles, please <a href='/SignIn'>Sign In</a> first.</Header>
+                    <p>If you do not have an account, please <a href='/SignIn'> Sign Up</a>.</p>
                 </>
             )}
         </Container>

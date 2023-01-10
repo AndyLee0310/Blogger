@@ -1,19 +1,28 @@
-import { Routes, Route, Outlet } from 'react-router-dom';
+import React from 'react';
+import { Routes, Route, Outlet, Navigate } from 'react-router-dom';
 import { Grid, Container } from 'semantic-ui-react';
+import { auth } from './firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 
 import Header from './Header';
 import Footer from './Footer';
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
 import NewPost from './pages/NewPost';
-import Member from './pages/Member';
 import Post from './pages/Post';
-import MemberMenu from './components/MemberMenu';
 import MemberPosts from './pages/member/Posts';
 import MemberCollections from './pages/member/Collections';
 import MemberSettings from './pages/member/Settings';
+import ManagementUsers from './pages/admin/ManagementUsers';
 
 function App() {
+    const [user, setUser] = React.useState(null);
+    React.useEffect(() => {
+        onAuthStateChanged(auth, (currentUser) => {
+            setUser(currentUser);
+        });
+    });
+
     return (
         <Routes>
             <Route path="/" element={<Layout />}>
@@ -24,7 +33,7 @@ function App() {
                 <Route path="/member/collections" element={<MemberCollections />} />
                 <Route path="/member/settings" element={<MemberSettings />} />
                 <Route path="/posts/:postId" element={<Post />} />
-                <Route path="/admin/managementUsers" element={<p>managementUsers</p>} />
+                <Route path="/admin/managementUsers" element={<ManagementUsers />} />
             </Route>
         </Routes>
     );

@@ -163,6 +163,13 @@ function MyPassword() {
 }
 
 function Collections() {
+    const [user, setUser] = React.useState(null);
+    // onAuthStateChanged(auth, (currentUser) => {
+    //     if (user)
+    //         setUser(currentUser);
+    //     else
+    //         window.location.href = '/SignIn';
+    // });
 
     React.useEffect(() => {
         // onAuthStateChanged(auth, (currentUser) => {
@@ -188,8 +195,6 @@ function Collections() {
         //     });
         // });
     }, []);
-
-    const user = auth.currentUser;
 
     return (
         <Container textAlign='center'>

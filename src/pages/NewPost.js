@@ -17,14 +17,12 @@ function NewPost() {
 
     const previewUrl = file ? URL.createObjectURL(file) : defaultImage;
 
-    React.useEffect(() => {
-        onAuthStateChanged(auth, (currentUser) => {
-            // if (user)
-            setUser(currentUser);
-            // else
-            //     history('/signin');
-        })
-    }, []);
+    // onAuthStateChanged(auth, (currentUser) => {
+    //     if (user)
+    //         setUser(currentUser);
+    //     else
+    //         window.location.href = '/SignIn';
+    // });
 
     const handleSubmit = () => {
         setIsLoading(true);
@@ -94,21 +92,6 @@ function NewPost() {
             }).catch((err) => {alert("uploadBytes error: " + err.message)});
             }
     }
-
-    /*
-    // JSON about write data to database
-    {
-        "title": "test",
-        "content": "test123",
-        "createdAt": database.Timestamp.now(),
-        "author": {
-            "displayName": "",
-            "photoURL": "",
-            "uid": "269m9NlQpbfXiXTucmqxV3ddZcN2",
-            "email": "t108590001@ntut.org.tw"
-        }
-    }
-    */
 
     return (
         <Container>

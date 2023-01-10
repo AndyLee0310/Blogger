@@ -1,21 +1,25 @@
 import React from 'react';
 import { Grid, Container, Item, Header } from 'semantic-ui-react';
 import { database, auth } from '../../firebase';
-import { ref, push, child, update, query, onValue } from 'firebase/database';
+import { onAuthStateChanged } from 'firebase/auth';
+import { ref, push, child, update, query, onValue, get } from 'firebase/database';
 
 import Post from '../../components/Post';
 import MemberMenu from '../../components/MemberMenu';
 
-class Posts extends React.Component {
-    constructor (props) {
-        super(props);
-        this.state = {
-            post: null,
-            posts: [],
-        };
-    }
+function Posts() {
+    const [user, setUser] = React.useState(null);
+    const [posts, setPosts] = React.useState([]);
 
-    getPosts = () => {
+    // onAuthStateChanged(auth, (currentUser) => {
+    //     if (user)
+    //         setUser(currentUser);
+    //     else
+    //         window.location.href = '/SignIn';
+    // });
+
+
+    React.useEffect(() => {
         const recentPostsRef = query(ref(database, 'posts'));
         // recentPostsRef.orderByChild('author.uid').equalTo(auth.currentUser.uid).on('value', (snapshot) => {
         //     console.log(snapshot.val());
@@ -26,17 +30,11 @@ class Posts extends React.Component {
                 if (childSnapshot.val().author.uid === auth.currentUser.uid)
                     postList.push(childSnapshot);
             });
-            this.setState({posts: postList});
+            setPosts(postList);
         })
-    }
+    }, []);
 
-    componentDidMount() {
-        this.getPosts();
-    }
-
-    render() {
-        let posts = this.state.posts;
-        return (
+    return (
         <Container textAlign='center'>
             <Header as="h2">My Posts</Header>
             <Grid>
@@ -55,8 +53,7 @@ class Posts extends React.Component {
                 </Grid.Row>
             </Grid>
         </Container>
-        );
-    }
+    );
 }
 
 export default Posts;

@@ -27,14 +27,16 @@ function SignIn() {
                             displayName: auth.currentUser.displayName || '',
                             photoURL: auth.currentUser.photoURL || '',
                             email: auth.currentUser.email,
-                            isAdmin: false
+                            isAdmin: false,
+                            uid: auth.currentUser.uid
                         }
                         const updates = {};
                         updates['/users/' + auth.currentUser.uid] = obj;
                         update(ref(database), updates)
                             .then(() => {
-                                history('/');
                                 setIsLoading(false);
+                                history('/');
+                                window.location.reload();
                             });
                         // history('/');
                         // setIsLoading(false);

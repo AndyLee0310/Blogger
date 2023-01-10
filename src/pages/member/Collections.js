@@ -8,7 +8,16 @@ import Post from '../../components/Post';
 import MemberMenu from '../../components/MemberMenu';
 
 function Collections() {
+    const [user, setUser] = React.useState(null);
     const [posts, setPosts] = React.useState([]);
+
+    // onAuthStateChanged(auth, (currentUser) => {
+    //     if (user)
+    //         setUser(currentUser);
+    //     else
+    //         window.location.href = '/SignIn';
+    // });
+
 
     React.useEffect(() => {
         onAuthStateChanged(auth, (currentUser) => {
