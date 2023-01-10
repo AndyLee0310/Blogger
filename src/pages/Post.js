@@ -1,7 +1,8 @@
 import React from 'react';
-import { Container, Grid, Icon, Image, Header, Segment, Comment, Form } from 'semantic-ui-react';
+import { Container, Grid, Icon, Image, Header, Segment, Comment, Form, Button } from 'semantic-ui-react';
 import { useParams } from 'react-router-dom';
 import { database, auth } from '../firebase';
+import { onAuthStateChanged } from 'firebase/auth';
 import { ref, push, child, update, query, onValue, get } from 'firebase/database';
 
 import userImage from '../assets/images/userImage.jpg';
@@ -12,6 +13,7 @@ function Post() {
     const [commentContent, setCommentContent] = React.useState("");
     const [isLoading, setIsLoading] = React.useState(false);
     const [comments, setComments] = React.useState([]);
+    const [userCollections, setUserCollections] = React.useState([]);
 
     React.useEffect(() => {
         const recentPostRef = ref(database);
@@ -31,17 +33,35 @@ function Post() {
         })
     }, [postId]);
 
+    React.useEffect(() => {
+        onAuthStateChanged(auth, (currentUser) => {
+            const recentPostsRef = query(ref(database, `users/${currentUser.uid}/collections`));
+            onValue(recentPostsRef, (collectionSnapshot) => {
+                let collectionList = [];
+                collectionSnapshot.forEach((childSnapshot) => {
+                    collectionList.push(childSnapshot.val());
+                });
+                setUserCollections(collectionList);
+            })
+        });
+    }, []);
+
     const isCollected = post.collectedBy?.includes(auth.currentUser.uid);
     const isLiked = post.likedBy?.includes(auth.currentUser.uid);
 
     function toggleCollected() {
         const uid = auth.currentUser.uid;
+        const cntsCount = post.commentsCount || 0;
+        const commentsList = post.comments || null;
         const collectedList = post.collectedBy || [];
+        const collectedListByUser = userCollections || [];
         const updates = {};
+        const updatesByUser = {};
         if (isCollected) {
             // remove uid from collectedList
             const tempList = collectedList.filter((e) => e !== uid);
             let obj = {
+                commentsCount: cntsCount,
                 title: post.title,
                 content: post.content,
                 imageUrl: post.imageUrl,
@@ -54,12 +74,18 @@ function Post() {
                 },
                 collectedBy: tempList,
                 likedBy: post.likedBy || [],
+                comments: commentsList,
             };
             updates['/posts/' + postId] = obj;
             update(ref(database), updates);
+
+            const tempListByUser = collectedListByUser.filter((e) => e !== postId);
+            updatesByUser['/users/' + uid + '/collections'] = tempListByUser;
+            update(ref(database), updatesByUser);
         } else {
             collectedList.push(uid);
             let obj = {
+                commentsCount: cntsCount,
                 title: post.title,
                 content: post.content,
                 imageUrl: post.imageUrl,
@@ -72,21 +98,29 @@ function Post() {
                 },
                 collectedBy: collectedList,
                 likedBy: post.likedBy || [],
+                comments: commentsList,
             };
             updates['/posts/' + postId] = obj;
             update(ref(database), updates);
+
+            collectedListByUser.push(postId);
+            updatesByUser['/users/' + uid + '/collections'] = collectedListByUser;
+            update(ref(database), updatesByUser);
         }
         window.location.reload();
     }
 
     function toggleLiked() {
         const uid = auth.currentUser.uid;
+        const cntsCount = post.commentsCount || 0;
+        const commentsList = post.comments || null;
         const likedList = post.likedBy || [];
         const updates = {};
         if (isLiked) {
             // remove uid from likedList
             const tempList = likedList.filter((e) => e !== uid);
             let obj = {
+                commentsCount: cntsCount,
                 title: post.title,
                 content: post.content,
                 imageUrl: post.imageUrl,
@@ -99,12 +133,14 @@ function Post() {
                 },
                 collectedBy: post.collectedBy || [],
                 likedBy: tempList,
+                comments: commentsList,
             };
             updates['/posts/' + postId] = obj;
             update(ref(database), updates);
         } else {
             likedList.push(uid);
             let obj = {
+                commentsCount: cntsCount,
                 title: post.title,
                 content: post.content,
                 imageUrl: post.imageUrl,
@@ -117,6 +153,7 @@ function Post() {
                 },
                 collectedBy: post.collectedBy || [],
                 likedBy: likedList,
+                comments: commentsList,
             };
             updates['/posts/' + postId] = obj;
             update(ref(database), updates);
@@ -128,10 +165,11 @@ function Post() {
         const date = new Date();
         const newDateTime = date.toLocaleString("zh-TW", {hour12: false});
 
+        const cntsCount = post.commentsCount || 0;
         const commentsList = post.comments || null;
         const updates = {};
         let obj = {
-            commentsCount: post.commentsCount + 1,
+            commentsCount: cntsCount + 1,
             title: post.title,
             content: post.content,
             imageUrl: post.imageUrl,

@@ -5,6 +5,7 @@ import { database } from '../firebase';
 import { ref, push, child, update, query, onValue } from 'firebase/database';
 
 import defaultImage from '../assets/images/defaultImage.png';
+import Post from '../components/Post';
 
 class Posts extends React.Component {
     constructor (props) {
@@ -32,6 +33,7 @@ class Posts extends React.Component {
 
     render() {
         let posts = this.state.posts;
+        console.log(posts);
         // const listPosts = tmp.map((pot) => <ListItem key={pot.key.toString()} post={pot.val().title} />)
         return (
         <Container textAlign='center'>
@@ -42,23 +44,24 @@ class Posts extends React.Component {
                             <Item.Group>
                                 {posts.map(post => {
                                     return (
-                                        <Item key={post.key.toString()}  as={Link} to={`/posts/${post.key.toString()}`}>
-                                            <Item.Image src={post.val().imageUrl || defaultImage} size="small" />
-                                            <Item.Content>
-                                                <Item.Meta>
-                                                    {post.val().author.photoURL ? (
-                                                        <Image src={require(post.val().author.photoURL)} />
-                                                    ) : (
-                                                        <Icon name="user circle" />
-                                                    )}
-                                                    &nbsp;
-                                                    {post.val().author.displayName ? (post.val().author.displayName) : ('User')}
-                                                </Item.Meta>
-                                                <Item.Header>{post.val().title}</Item.Header>
-                                                <Item.Description>{post.val().content}</Item.Description>
-                                                <Item.Extra>{post.val().commentsCount || 0} Comments · {post.val().likedBy?.length || 0} Likes</Item.Extra>
-                                            </Item.Content>
-                                        </Item>
+                                        <Post post={post} />
+                                        // <Item key={post.key.toString()}  as={Link} to={`/posts/${post.key.toString()}`}>
+                                        //     <Item.Image src={post.val().imageUrl || defaultImage} size="small" />
+                                        //     <Item.Content>
+                                        //         <Item.Meta>
+                                        //             {post.val().author.photoURL ? (
+                                        //                 <Image src={require(post.val().author.photoURL)} />
+                                        //             ) : (
+                                        //                 <Icon name="user circle" />
+                                        //             )}
+                                        //             &nbsp;
+                                        //             {post.val().author.displayName ? (post.val().author.displayName) : ('User')}
+                                        //         </Item.Meta>
+                                        //         <Item.Header>{post.val().title}</Item.Header>
+                                        //         <Item.Description>{post.val().content}</Item.Description>
+                                        //         <Item.Extra>{post.val().commentsCount || 0} Comments · {post.val().likedBy?.length || 0} Likes</Item.Extra>
+                                        //     </Item.Content>
+                                        // </Item>
                                     );
                                 })}
                             </Item.Group>

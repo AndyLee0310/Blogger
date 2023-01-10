@@ -1,12 +1,17 @@
 import { Routes, Route, Outlet } from 'react-router-dom';
+import { Grid, Container } from 'semantic-ui-react';
+
 import Header from './Header';
 import Footer from './Footer';
 import Home from './pages/Home';
 import SignIn from './pages/SignIn';
 import NewPost from './pages/NewPost';
-import AboutMe from './pages/AboutMe';
+import Member from './pages/Member';
 import Post from './pages/Post';
-// import Posts from './pages/Posts';
+import MemberMenu from './components/MemberMenu';
+import MemberPosts from './pages/member/Posts';
+import MemberCollections from './pages/member/Collections';
+import MemberSettings from './pages/member/Settings';
 
 function App() {
     return (
@@ -15,8 +20,11 @@ function App() {
                 <Route index element={<Home />} />
                 <Route path="/SignIn" element={<SignIn />} />
                 <Route path="/new-post" element={<NewPost />} />
-                <Route path="/aboutMe" element={<AboutMe />} />
+                <Route path="/member/myPosts" element={<MemberPosts />} />
+                <Route path="/member/collections" element={<MemberCollections />} />
+                <Route path="/member/settings" element={<MemberSettings />} />
                 <Route path="/posts/:postId" element={<Post />} />
+                <Route path="/admin/managementUsers" element={<p>managementUsers</p>} />
             </Route>
         </Routes>
     );

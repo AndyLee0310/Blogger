@@ -1,8 +1,10 @@
 import React from 'react';
 import { Menu, Form, Container, Message } from 'semantic-ui-react';
 import { useNavigate } from 'react-router-dom';
-import { auth } from '../firebase';
+import { auth, database } from '../firebase';
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
+import { ref, push, child, update, query, onValue } from 'firebase/database';
+
 
 function SignIn() {
     const history = useNavigate();
@@ -21,8 +23,21 @@ function SignIn() {
             } else {
                 createUserWithEmailAndPassword(auth, email, password)
                     .then(() => {
-                        history('/');
-                        setIsLoading(false);
+                        let obj = {
+                            displayName: auth.currentUser.displayName || '',
+                            photoURL: auth.currentUser.photoURL || '',
+                            email: auth.currentUser.email,
+                            isAdmin: false
+                        }
+                        const updates = {};
+                        updates['/users/' + auth.currentUser.uid] = obj;
+                        update(ref(database), updates)
+                            .then(() => {
+                                history('/');
+                                setIsLoading(false);
+                            });
+                        // history('/');
+                        // setIsLoading(false);
                     })
                     .catch((err) => {
                         switch(err.code) {
@@ -33,7 +48,7 @@ function SignIn() {
                                 setErrorMessage('Invalid email');
                                 break;
                             case 'auth/weak-password':
-                                setErrorMessage('Weak password (Length needs 6 digitsd)');
+                                setErrorMessage('Weak password (Length needs 6 digits)');
                                 break;
                             default:
                         }
