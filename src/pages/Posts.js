@@ -58,57 +58,34 @@ class Posts extends React.Component {
                                     hasMore={true}
                                     loader={<h4>Loading...</h4>} >
                                     {posts.map(post => (
-                                    //     <>
-                                    //     <Item style={{'border': '1px solid'}}>
-                                    //     <Item.Image src='https://react.semantic-ui.com/images/wireframe/image.png' size="small" />
-                                  
-                                    //     <Item.Content>
-                                    //       <Item.Header as='a'>My Neighbor Totoro</Item.Header>
-                                    //       <Item.Meta>
-                                    //         <span className='cinema'>IFC Cinema</span>
-                                    //       </Item.Meta>
-                                    //       <Item.Description>{paragraph}</Item.Description>
-                                    //       <Item.Extra>
-                                    //         <Button primary floated='right'>
-                                    //           Buy tickets
-                                    //           <Icon name='right chevron' />
-                                    //         </Button>
-                                    //       </Item.Extra>
-                                    //     </Item.Content>
-                                    //   </Item>
-                                    //   <br />
-                                    //   </>
-                                        // return (
-                                            // <Post post={post} />
-                                            <>
-                                            <Item key={post.key.toString()}>
-                                                <Item.Image src={post.val().imageUrl || defaultImage} size="small" />
-                                                <Item.Content>
-                                                    <Item.Meta>
-                                                        {post.val().author.photoURL ? (
-                                                            <Image src={require(post.val().author.photoURL)} />
-                                                        ) : (
-                                                            <Icon name="user circle" />
-                                                        )}
-                                                        &nbsp;
-                                                        {post.val().author.displayName ? (post.val().author.displayName) : ('User')}
-                                                    </Item.Meta>
-                                                    <Item.Header>{post.val().title}</Item.Header>
-                                                    <Item.Description>{post.val().content}</Item.Description>
-                                                    <Item.Extra>
-                                                        {post.val().commentsCount || 0} Comments · {post.val().likedBy?.length || 0} Likes
-                                                        <Button floated='right' as={Link} to={`/posts/${post.key.toString()}`}>
-                                                            more
-                                                            <Icon name='right chevron' />
-                                                        </Button>
-                                                    </Item.Extra>
-                                                </Item.Content>
-                                            </Item>
-                                            <br />
-                                            <hr />
-                                            <br />
-                                            </>
-                                        // );
+                                        <>
+                                        <Item key={post.key.toString()}>
+                                            <Item.Image src={post.val().imageUrl || defaultImage} size="small" />
+                                            <Item.Content>
+                                                <Item.Meta>
+                                                    {post.val().author.photoURL ? (
+                                                        <Image src={require(post.val().author.photoURL)} />
+                                                    ) : (
+                                                        <Icon name="user circle" />
+                                                    )}
+                                                    &nbsp;
+                                                    {post.val().author.displayName ? (post.val().author.displayName) : ('User')}
+                                                </Item.Meta>
+                                                <Item.Header>{post.val().title}</Item.Header>
+                                                <Item.Description>{post.val().content}</Item.Description>
+                                                <Item.Extra>
+                                                    {post.val().commentsCount || 0} Comments · {post.val().likedBy?.length || 0} Likes
+                                                    <Button floated='right' as={Link} to={`/posts/${post.key.toString()}`}>
+                                                        more
+                                                        <Icon name='right chevron' />
+                                                    </Button>
+                                                </Item.Extra>
+                                            </Item.Content>
+                                        </Item>
+                                        <br />
+                                        <hr />
+                                        <br />
+                                        </>
                                     ))}
                                 </InfiniteScroll>
                             </Item.Group>

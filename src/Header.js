@@ -1,15 +1,19 @@
 import React from 'react';
 import { Menu, Search, Image } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { auth, database } from './firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { ref, push, child, update, query, onValue, get } from 'firebase/database';
+import { algolia } from './algolia';
 
 import webSiteLogo from './assets/images/logo.png';
 
 function Header() {
+    const history = useNavigate();
     const [user, setUser] = React.useState(null);
     const [userData, setUserData] = React.useState({});
+    const [inputValue, setInputValue] = React.useState('');
+    const [results, setResults] = React.useState([]);
 
     React.useEffect(() => {
         onAuthStateChanged(auth, (currentUser) => {
@@ -22,13 +26,41 @@ function Header() {
         });
     }, []);
 
+    function onSearchChange(e, { value }) {
+        setInputValue(value);
+
+        algolia.search(value).then((result) => {
+            // console.log(result.hits);
+            const searchResults = result.hits.map((hit) => {
+                return {
+                    title: hit.title,
+                    description: hit.content,
+                    id: hit.objectID,
+                };
+            });
+            setResults(searchResults);
+        });
+    }
+
+    function onResultSelect(e, { result }) {
+        setInputValue('');
+        history(`/posts/${result.id}`);
+    }
+
     return (
         <Menu>
             <Menu.Item as={Link} to="/">
                 <Image src={webSiteLogo} size='mini' />
                 Blogger
             </Menu.Item>
-            <Menu.Item><Search /></Menu.Item>
+            <Menu.Item>
+                <Search 
+                    value={inputValue}
+                    onSearchChange={onSearchChange}
+                    results={results}
+                    noResultsMessage="No related posts found"
+                    onResultSelect={onResultSelect} />
+            </Menu.Item>
             <Menu.Menu position="right">
                 {user ? (
                     <>

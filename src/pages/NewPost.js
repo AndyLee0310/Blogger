@@ -5,6 +5,7 @@ import { database, auth, storage } from '../firebase';
 import { onAuthStateChanged } from "firebase/auth";
 import { ref as databaseRef, push, child, update, query, onValue } from 'firebase/database';
 import { ref as storageRef, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { algoliaUpdate } from '../algolia';
 import defaultImage from '../assets/images/defaultImage.png';
 
 function NewPost() {
@@ -51,13 +52,19 @@ function NewPost() {
                         email: auth.currentUser.email
                     }
                 }
-                
+                const objects = {
+                    title: title,
+                    content: content,
+                    objectID: newPostKey
+                }
                 const updates = {};
                 updates['/posts/' + newPostKey] = obj;
                 update(databaseRef(database), updates)
                     .then(() => {
-                        setIsLoading(true);
-                        history('/');
+                        algoliaUpdate.saveObject(objects).then(() => {
+                            setIsLoading(true);
+                            history('/');
+                        });
                     });
             }).catch((err) => {alert("uploadBytes error: " + err.message)});
         } else {
@@ -80,17 +87,23 @@ function NewPost() {
                             email: auth.currentUser.email
                         }
                     }
-                    
+                    const objects = {
+                        title: title,
+                        content: content,
+                        objectID: newPostKey
+                    }
                     const updates = {};
                     updates['/posts/' + newPostKey] = obj;
                     update(databaseRef(database), updates)
                         .then(() => {
-                            setIsLoading(true);
-                            history('/');
+                            algoliaUpdate.saveObject(objects).then(() => {
+                                setIsLoading(true);
+                                history('/');
+                            });
                         });
                 }).catch((err) => {alert("getDownloadUrl error: " + err.message)});
             }).catch((err) => {alert("uploadBytes error: " + err.message)});
-            }
+        }
     }
 
     return (
@@ -99,22 +112,22 @@ function NewPost() {
             <Form onSubmit={handleSubmit}>
                 <Image src={previewUrl} />
                 <Button basic as='label' htmlFor='post-image' style={{ width: '100%' }}>Update Post Image</Button>
-                <Form.Input 
-                    id='post-image' 
-                    type='file' 
-                    style={{ display: 'none' }} 
+                <Form.Input
+                    id='post-image'
+                    type='file'
+                    style={{ display: 'none' }}
                     onChange={(e) => {
                         setFile(e.target.files[0]);
-                    }}/>
+                    } } />
                 <Form.Input
                     label='Post Title'
                     value={title}
-                    onChange={(e) => {setTitle(e.target.value);}}
+                    onChange={(e) => { setTitle(e.target.value); } }
                     placeholder="Please input post title" />
                 <Form.TextArea
                     label='Post Content'
                     value={content}
-                    onChange={(e) => {setContent(e.target.value);}}
+                    onChange={(e) => { setContent(e.target.value); } }
                     placeholder="Please input post content" />
                 <Form.Button loading={isLoading}>Submit</Form.Button>
             </Form>

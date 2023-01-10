@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Container, Item, Header, Button, Segment, Modal, Input } from 'semantic-ui-react';
+import { Grid, Container, Item, Header, Button, Segment, Modal, Input, Image, Icon } from 'semantic-ui-react';
 import { database, auth } from '../../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { ref, push, child, update, query, onValue, get } from 'firebase/database';
@@ -38,7 +38,10 @@ function MyName() {
                     setIsModalOpen(true);
                 }}>Edit</Button>
         </Header>
-        <Segment vertical>{/* user.displayname */}</Segment>
+        <Segment vertical>
+            { /* user.displayname */ }
+            user name
+        </Segment>
         <Modal open={isModalOpen} size="mini">
             <Modal.Header>Edit User Name</Modal.Header>
             <Modal.Content>
@@ -85,11 +88,16 @@ function MyPhoto() {
             Photo
             <Button floated="right" onClick={() => setIsModalOpen(true)}>Edit</Button>
         </Header>
-        <Segment vertical>{/* user.photoURL */}</Segment>
+        <Segment vertical>
+            {/* user.photoURL */}
+            <Icon name="user circle" size='big' />
+        </Segment>
         <Modal open={isModalOpen} size="mini">
             <Modal.Header>Edit User Photo</Modal.Header>
             <Modal.Content>
-                Photo
+                <Icon name="user circle" size='huge' />
+                <Button as='label' htmlFor='post-image'>Upload</Button>
+                <Input type='file' id='post-image' style={{ display: 'none' }} />
             </Modal.Content>
             <Modal.Actions>
                 <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
@@ -162,7 +170,7 @@ function MyPassword() {
     );
 }
 
-function Collections() {
+function Settings() {
     const [user, setUser] = React.useState(null);
     // onAuthStateChanged(auth, (currentUser) => {
     //     if (user)
@@ -216,4 +224,4 @@ function Collections() {
     );
 }
 
-export default Collections;
+export default Settings;

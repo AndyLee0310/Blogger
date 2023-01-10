@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Container, Item, Header } from 'semantic-ui-react';
+import { Grid, Container, Item, Header, Message } from 'semantic-ui-react';
 import { database, auth } from '../../firebase';
 import { onAuthStateChanged } from 'firebase/auth';
 import { ref, push, child, update, query, onValue, get } from 'firebase/database';
@@ -52,11 +52,15 @@ function Collections() {
                     <Grid.Column width={3}><MemberMenu /></Grid.Column>
                     <Grid.Column width={10} textAlign='left'>
                         <Item.Group>
-                            {posts.map(post => {
-                                return (
-                                    <Post post={post} />
-                                );
-                            })}
+                            {(posts.length <= 0) ? (
+                                <Message warning>No Collections</Message>
+                            ) : (
+                                posts.map(post => {
+                                    return (
+                                        <Post post={post} />
+                                    );
+                                })
+                            )}
                         </Item.Group>
                     </Grid.Column>
                     <Grid.Column width={3}></Grid.Column>
