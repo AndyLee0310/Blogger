@@ -53,14 +53,19 @@ function Header() {
                 <Image src={webSiteLogo} size='mini' />
                 Blogger
             </Menu.Item>
-            <Menu.Item>
-                <Search 
-                    value={inputValue}
-                    onSearchChange={onSearchChange}
-                    results={results}
-                    noResultsMessage="No related posts found"
-                    onResultSelect={onResultSelect} />
-            </Menu.Item>
+            {user ? (
+                <Menu.Item>
+                    <Search 
+                        value={inputValue}
+                        onSearchChange={onSearchChange}
+                        results={results}
+                        noResultsMessage="No related posts found"
+                        onResultSelect={onResultSelect} />
+                </Menu.Item>
+                ) : (
+                    <></>
+                )
+            }
             <Menu.Menu position="right">
                 {user ? (
                     <>
